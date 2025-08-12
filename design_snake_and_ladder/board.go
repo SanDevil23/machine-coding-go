@@ -19,7 +19,7 @@ type Board struct {
 }
 
 // new board function to initialize the board
-func newBoard(size int, snakes []Snake, ladders []Ladder) *Board {
+func NewBoard(size int, snakes []Snake, ladders []Ladder) *Board {
 	snakeMap := make(map[int]int)
 	ladderMap := make(map[int]int)
 
@@ -38,7 +38,7 @@ func newBoard(size int, snakes []Snake, ladders []Ladder) *Board {
 	}
 }
 
-func (b *Board) adjustPosition(pos int) int {
+func (b *Board) AdjustPosition(pos int) int {
 	// check if the position has a snake
 	if finalPos, ok := b.Snakes[pos]; ok {
 		fmt.Println("Bitten by Snake")
