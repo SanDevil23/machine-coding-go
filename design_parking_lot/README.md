@@ -59,5 +59,9 @@
 ---
 
 ## Ticket Details
-
+> <parking_lot_id><floor_no><slot_no>
 - Ticket ID format:  
+Example: `PR1234_2_5` (denotes the 5th slot on the 2nd floor of parking lot PR1234)
+
+- We assume there is only **one parking lot**.
+- **Parking Lot ID**: `PR1234`
