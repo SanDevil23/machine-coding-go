@@ -13,10 +13,24 @@ type Parking struct {
 	Floors	[]*Floor
 }
 
+func (p *Parking) addFloor(floor *Floor) *Parking {
+	p.Floors = append(p.Floors, floor)
+	return p
+}
+
+func (p *Parking) NewFloor(slots int) *Parking{
+	floor := &Floor{
+		Slots: []*Slot{},
+	}
+	p.addSlots(floor, slots)
+	p.addFloor(floor)
+	return p
+}
+
+
 // this function is only for the purpose of definition 
 // we need to refine this function
-func (p *Parking) createSlots() *Parking {
-	slots := 10
+func (p *Parking) addSlots(floor *Floor, slots int) *Floor {
 
 	totalSlots := []*Slot{}
 
@@ -38,13 +52,9 @@ func (p *Parking) createSlots() *Parking {
 		}
 	}
 
-	FirstFloor := Floor{
+	floor = &Floor{
 		Slots: totalSlots,
 	}
 
-	parking1 := Parking{
-		Floors: []*Floor{&FirstFloor},
-	}
-
-	return &parking1
+	return floor
 }
