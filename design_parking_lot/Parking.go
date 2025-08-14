@@ -1,6 +1,7 @@
 package main
 
 type Slot struct {
+	slotId	int64
 	Car		bool
 	Bike	bool
 }
@@ -11,6 +12,12 @@ type Floor struct{
 
 type Parking struct {
 	Floors	[]*Floor
+}
+
+func NewParking() *Parking {
+	return &Parking{
+		Floors: []*Floor{},
+	}
 }
 
 func (p *Parking) addFloor(floor *Floor) *Parking {
@@ -27,9 +34,8 @@ func (p *Parking) NewFloor(slots int) *Parking{
 	return p
 }
 
-
-// this function is only for the purpose of definition 
-// we need to refine this function
+// TODO:  currently dividing slots into 50-50 for each vehicle type
+// custom logic needed for slot allotment
 func (p *Parking) addSlots(floor *Floor, slots int) *Floor {
 
 	totalSlots := []*Slot{}
@@ -38,6 +44,7 @@ func (p *Parking) addSlots(floor *Floor, slots int) *Floor {
 	for i:= slots; i>=0; i-- {
 		if (i>slots/2){
 			var s = Slot{
+				slotId: int64(i),
 				Car: true,
 				Bike: false,
 			}
@@ -45,6 +52,7 @@ func (p *Parking) addSlots(floor *Floor, slots int) *Floor {
 
 		}else{
 			var s = Slot{
+				slotId: int64(i),
 				Car: false,
 				Bike: true,
 			}	
