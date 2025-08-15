@@ -11,12 +11,14 @@ type Floor struct{
 }
 
 type Parking struct {
-	Floors	[]*Floor
+	ParkingId string
+	Floors    []*Floor
 }
 
-func NewParking() *Parking {
+func NewParking(parkingId string) *Parking {
 	return &Parking{
-		Floors: []*Floor{},
+		ParkingId: parkingId,
+		Floors:    []*Floor{},
 	}
 }
 

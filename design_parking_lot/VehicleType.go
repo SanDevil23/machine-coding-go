@@ -14,3 +14,6 @@ var VehicleTypeToString = map[VehicleType] string {
 	Bike:		"bike",
 }
 
+func (vType VehicleType) toString() string {
+	return VehicleTypeToString[vType]
+}
