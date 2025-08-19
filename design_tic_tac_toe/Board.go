@@ -34,4 +34,32 @@ func (b *Board) makeMove(row int, col int, mark string) bool{
 	return true
 }
 
+func (b *Board) isFull() bool {
+	for i := 0; i < b.size; i++ {
+		for j := 0; j < b.size; j++ {
+			if b.isCellEmpty(i, j) {
+				return false
+			}
+		}
+	}
+	return true
+}
 
+func (b *Board) checkWin(mark string) bool {
+	// check rows and columns
+	for i := 0; i < b.size; i++ {
+		if b.grid[i][0] == mark && b.grid[i][1] == mark && b.grid[i][2] == mark {
+			return true
+		}
+		if b.grid[0][i] == mark && b.grid[1][i] == mark && b.grid[2][i] == mark {
+			return true
+		}
+	}
+	// check diagonals
+	if b.grid[0][0] == mark && b.grid[1][1] == mark && b.grid[2][2] == mark {
+		return true
+	}
+	if b.grid[0][2] == mark && b.grid[1][1] == mark && b.grid[2][0] == mark {
+		return true
+	}
+}
