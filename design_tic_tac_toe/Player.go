@@ -5,17 +5,17 @@ type Player struct {
 	symbol 	string
 }
 
-func newPlayer(name string, symbol string) *Player {
+func NewPlayer(name string, symbol string) *Player {
 	return &Player{
 		name:   name,
 		symbol: symbol,
 	}
 }
 
-func (p *Player) getName() string {
+func (p *Player) GetName() string {
 	return p.name
 }
 
-func (p *Player) getSymbol() string {
+func (p *Player) GetSymbol() string {
 	return p.symbol
 }
