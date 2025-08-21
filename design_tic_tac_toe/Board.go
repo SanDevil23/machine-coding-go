@@ -62,4 +62,5 @@ func (b *Board) checkWin(mark string) bool {
 	if b.grid[0][2] == mark && b.grid[1][1] == mark && b.grid[2][0] == mark {
 		return true
 	}
+	return false
 }
