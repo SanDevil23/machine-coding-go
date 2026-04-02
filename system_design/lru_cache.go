@@ -26,14 +26,15 @@ func (dll *DoublyLinkedList) createHead(data int){
 }
 
 // method to insert a new node at the beginning of the LL
-func (dll *DoublyLinkedList) InsertNode(data int){
+func (dll *DoublyLinkedList) InsertNode(data int) *Node{
     node:=&Node{data: data};
-    head:=dll.head;
-    next:=head.next;
-    head.next = node;
-    node.next = next;
-    node.prev = head;
-    next.prev = node;
+    head:=dll.head
+    next:=head.next
+    head.next = node
+    node.next = next
+    node.prev = head
+    next.prev = node
+    return node
 }
 
 // helper to initialize the LRU Cache struct
@@ -49,13 +50,42 @@ func Constructor(capacity int) LRUCache {
 }
 
 
-func (this *LRUCache) Get(key int) int {
-    
+func (lru *LRUCache) Get(key int) int {
+    node, ok := lru.keyMap[key]
+    if !ok{
+        return -1
+    }
+    return node.data
 }
 
 
-func (this *LRUCache) Put(key int, value int)  {
-    
+func (lru *LRUCache) Put(key int, val int)  {
+    // fetch the dll and key map
+    dll:=lru.q
+    keyMap:=lru.keyMap
+
+    // check if map contains key
+    node, ok:=keyMap[key]
+
+    // if key is present, update the node
+    if ok{
+        node.data = val
+        return
+    } else if (dll.head!=nil && lru.currSize<lru.capacity){
+        node:=dll.InsertNode(val)
+        keyMap[val]=node
+        lru.currSize++
+        return
+    } else if (lru.currSize==lru.capacity){
+        tail := dll.tail
+        tail = tail.prev
+        tail.next = nil
+        node:=dll.InsertNode(val)
+        keyMap[val]=node
+        return
+    }
+
+    dll.createHead(val)
 }
 
 
