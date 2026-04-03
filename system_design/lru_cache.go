@@ -19,8 +19,8 @@ type DoublyLinkedList struct {
 }
 
 // method to create the head of the linked list
-func (dll *DoublyLinkedList) createHead(data int){
-    node:=&Node{data: data};
+func (dll *DoublyLinkedList) createHead(){
+    node:=&Node{data: -1};
     dll.head = node;
     dll.tail = node;
 }
@@ -29,32 +29,62 @@ func (dll *DoublyLinkedList) createHead(data int){
 func (dll *DoublyLinkedList) InsertNode(data int) *Node{
     node:=&Node{data: data};
     head:=dll.head
-    next:=head.next
+
+    nextNd:=head.next
     head.next = node
-    node.next = next
+    node.next = nextNd
     node.prev = head
-    next.prev = node
+    if nextNd!=nil{
+        nextNd.prev = node
+    }else{
+        dll.tail = node
+    }
+
     return node
 }
 
 // helper to initialize the LRU Cache struct
 func Constructor(capacity int) LRUCache {
-    dll := DoublyLinkedList{};
-    kMap := make(map[int]*Node);
+    dll := DoublyLinkedList{}
+    dll.createHead()
+    kMap := make(map[int]*Node)
     return LRUCache{
         q:         &dll,
         keyMap:    kMap,
         capacity:  capacity,
-        currSize:  1,
+        currSize:  0,
     }
 }
 
 
 func (lru *LRUCache) Get(key int) int {
+    head:=lru.q.head
     node, ok := lru.keyMap[key]
     if !ok{
         return -1
     }
+
+    prv:=node.prev
+    prv.next = node.next
+    if prv.next!=nil{
+        node.next.prev = prv
+    } else {
+        lru.q.tail = prv
+    }
+
+    if head.next==nil{
+        return -1
+    }
+    nxt:=head.next
+    head.next = node
+    node.next = nxt
+    node.prev = head
+    if (nxt!=nil){
+        nxt.prev = node
+    }else{
+        lru.q.tail = node
+    }
+
     return node.data
 }
 
@@ -66,7 +96,6 @@ func (lru *LRUCache) Put(key int, val int)  {
 
     // check if map contains key
     node, ok:=keyMap[key]
-
     // if key is present, update the node
     if ok{
         node.data = val
@@ -78,14 +107,16 @@ func (lru *LRUCache) Put(key int, val int)  {
         return
     } else if (lru.currSize==lru.capacity){
         tail := dll.tail
+        delete(keyMap, tail.data)
         tail = tail.prev
         tail.next = nil
+        dll.tail = tail
         node:=dll.InsertNode(val)
         keyMap[val]=node
         return
     }
 
-    dll.createHead(val)
+    dll.createHead()
 }
 
 
