@@ -1,5 +1,4 @@
 package system_design
-
 type LRUCache struct {
     q           *DoublyLinkedList;
     keyMap      map[int]*Node;
@@ -8,9 +7,10 @@ type LRUCache struct {
 }
 
 type Node struct{
-    data int;
-    prev *Node;
-    next *Node;
+    key  int
+    data int
+    prev *Node
+    next *Node
 }
 
 type DoublyLinkedList struct {
@@ -26,8 +26,8 @@ func (dll *DoublyLinkedList) createHead(){
 }
 
 // method to insert a new node at the beginning of the LL
-func (dll *DoublyLinkedList) InsertNode(data int) *Node{
-    node:=&Node{data: data};
+func (dll *DoublyLinkedList) InsertNode(key int, data int) *Node{
+    node:=&Node{data: data, key: key};
     head:=dll.head
 
     nextNd:=head.next
@@ -72,9 +72,6 @@ func (lru *LRUCache) Get(key int) int {
         lru.q.tail = prv
     }
 
-    if head.next==nil{
-        return -1
-    }
     nxt:=head.next
     head.next = node
     node.next = nxt
@@ -99,26 +96,47 @@ func (lru *LRUCache) Put(key int, val int)  {
     // if key is present, update the node
     if ok{
         node.data = val
+
+        prv:=node.prev
+        prv.next = node.next
+        if prv.next!=nil{
+            node.next.prev = prv
+        } else {
+            lru.q.tail = prv
+        }
+        head:=dll.head
+        if head.next==nil{
+            return
+        }
+        nxt:=head.next
+        head.next = node
+        node.next = nxt
+        node.prev = head
+        if (nxt!=nil){
+            nxt.prev = node
+        }else{
+            lru.q.tail = node
+        }
+
         return
-    } else if (dll.head!=nil && lru.currSize<lru.capacity){
-        node:=dll.InsertNode(val)
-        keyMap[val]=node
+    } else if (lru.currSize<lru.capacity){
+        node:=dll.InsertNode(key, val)
+        keyMap[key]=node
         lru.currSize++
         return
     } else if (lru.currSize==lru.capacity){
         tail := dll.tail
-        delete(keyMap, tail.data)
+        delete(keyMap, tail.key)
         tail = tail.prev
         tail.next = nil
         dll.tail = tail
-        node:=dll.InsertNode(val)
-        keyMap[val]=node
+        node:=dll.InsertNode(key, val)
+        keyMap[key]=node
         return
     }
 
     dll.createHead()
 }
-
 
 /**
  * Your LRUCache object will be instantiated and called as such:
